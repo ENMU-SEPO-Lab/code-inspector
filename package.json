@@ -1,0 +1,26 @@
+{
+  "name": "code-inspector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ENMU-SEPO-Lab/code-inspector.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ENMU-SEPO-Lab/code-inspector/issues"
+  },
+  "homepage": "https://github.com/ENMU-SEPO-Lab/code-inspector#readme",
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.2"
+  }
+}

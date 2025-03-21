@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload & Code Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/mode-java.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <!-- <div class="menu-bar">Left Panel Menu</div> -->
+        <form>
+            <div class="form-row">
+                <p id="status"></p>
+            </div>
+            <!-- First Row: Upload Form in a single row -->
+            <div class="form-row">
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <input type="file" id="fileInput" required>
+            </div>
+            <br>
+            <!-- Second Row: Java Code Editor -->
+            <div class="editor-container">
+                <h4>Java Code Viewer</h4>
+                <div id="editor"></div>
+            </div>
+            <br>
+
+            <!-- First Row: Upload Form in a single row -->
+            <div class="form-row">
+                <button type="submit" id="uploadBtn">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Right Panel (Empty for now) -->
+    <div class="right-panel">
+        <!-- <div class="menu-bar">Right Panel Menu</div> -->
+        <!-- <h3>Output</h3> -->
+        <div id="output" class="output-container"></div>
+    </div>
+    
+
+    <script>
+        // Initialize ACE Editor
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/chrome"); // Light theme for white background
+        editor.session.setMode("ace/mode/java");
+        editor.setShowPrintMargin(false);
+        editor.setReadOnly(true); // Read-only mode for preview
+
+        document.getElementById("fileInput").addEventListener("change", function(e) {
+            const selectedFile = e.target.files[0];
+
+            if (!selectedFile) return;
+
+            if (!selectedFile.name.endsWith('.java')) {
+                alert("Only .java files are allowed");
+                e.target.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                editor.setValue(event.target.result, -1); // Load file content into ACE Editor
+            };
+            reader.readAsText(selectedFile);
+        });
+
+        document.getElementById("uploadBtn").addEventListener("click", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const fileInput = document.getElementById("fileInput");
+
+            if (fileInput.files.length === 0) {
+                document.getElementById("status").innerText = "Please select a .java file.";
+                document.getElementById("status").style.color = "red";
+                return;
+            }
+
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("email", email);
+
+            try {
+                const response = await fetch("http://localhost:3001/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                document.getElementById("status").innerText = result.success ? "Upload successful!" : "Upload failed.";
+            } catch (error) {
+                document.getElementById("status").innerText = "Error uploading file.";
+            }
+        });
+        document.getElementById("output").innerText = "Under Construction...";
+        function showMessage(type, message) {
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML += `<p class="${type}">${message}</p>`;
+        }
+
+        // Example usage
+        showMessage("success", "Compilation Successful!");
+        showMessage("error", "Syntax Error: Unexpected token.");
+        showMessage("warning", "Warning: Variable declared but not used.");
+
+    </script>
+
+</body>
+</html>
