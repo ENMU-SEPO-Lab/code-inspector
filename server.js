@@ -114,7 +114,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         const branchName = "jenkins";
         const commitMessage = `Upload: ${filename} by ${email}`;
         const repoOwner = 'imhmede';
-        const repoName = 'CodeInspector';
+        const repoName = 'code-inspector';
         const uploadPath = `uploads/${filename}`;
 
         // Step 1: Get the latest commit SHA for the branch
